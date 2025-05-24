@@ -15,6 +15,6 @@ public  class Produtos {
   }
   @Override
   public String toString() {
-    return this.nome;
+    return this.nome + "       R$" + this.valor + "         Quantidade: " + this.estoque;
   }
-} 
+}

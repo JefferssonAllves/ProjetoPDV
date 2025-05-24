@@ -4,6 +4,7 @@ public class Vendedores {
   int codigo = 0;
   static int quantidadeVendedores = 1;
   String nome = "";
+  Double comissao = 0.;
 
   public Vendedores(String nome) {
     quantidadeVendedores += 1;

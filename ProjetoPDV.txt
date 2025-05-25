@@ -40,16 +40,16 @@ produtos estoque
 
 
 
-                                        Cliente: NomeCliente
-                                        Vendedor: NomeVendedor
-                                        DataHora
+                            Cliente: NomeCliente
+                            Vendedor: NomeVendedor
+                            DataHora
 
-                                        Produtos:
-                                        1 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
-                                        2 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
-                                        3 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
-                                        4 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
-                                        5 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
-                                        6 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
+                            Produtos:
+                            1 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
+                            2 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
+                            3 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
+                            4 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
+                            5 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
+                            6 : Quantidade comprada : precoUnitario : ValorTotalDosMesmosProdutos
 
-                                        Valor Total da comrpa: Total
+                            Valor Total da comrpa: Total

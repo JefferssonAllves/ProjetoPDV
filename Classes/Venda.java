@@ -10,7 +10,7 @@ public class Venda {
   int quantidadeComprada = 0;
   Double totalVenda = 0.;
   String dataHora = "";
-
+  Double comissaoVenda = 0.;
 
   public Venda(Clientes cliente, Vendedores vendedor, Produtos produto, int quantidadeComprada) {
     this.cliente = cliente;
@@ -18,7 +18,8 @@ public class Venda {
     this.produto = produto;
     this.quantidadeComprada = quantidadeComprada;
     this.totalVenda = produto.valor * this.quantidadeComprada;
-    this.vendedor.comissao += this.totalVenda * 0.05;
+    this.comissaoVenda = this.totalVenda * 0.05;
+    this.vendedor.comissao += comissaoVenda;
     LocalDateTime now = LocalDateTime.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
     this.dataHora = now.format(formatter);

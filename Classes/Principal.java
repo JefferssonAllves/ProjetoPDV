@@ -98,6 +98,7 @@ public class Principal {
             String messageProdutos = "Produtos\n\n";
             messageProdutos += "1 - Cadastrar novo produto\n";
             messageProdutos += "2 - Visualizar produtos\n";
+            messageProdutos += "3 - Atualizar estoque\n";
             messageProdutos += "\n\nDigite sua opção:";
             switch (Integer.parseInt(JOptionPane.showInputDialog(messageProdutos))) {
               case 1:
@@ -118,6 +119,19 @@ public class Principal {
                   messageMostrarProdutos += produtoMap.getKey() + ":   " + produtoMap.getValue() + "\n";
                 }
                 JOptionPane.showMessageDialog(null, messageMostrarProdutos);
+                break;
+              case 3:
+                String messageMostrarProdutos2 = "";
+                for (Map.Entry<Integer, Produtos> produtoMap : produtos.entrySet()) {
+                  messageMostrarProdutos2 += produtoMap.getKey() + ":   " + produtoMap.getValue() + "\n";
+                }
+                messageMostrarProdutos2 += "\nDigite o codigo do produto:";
+                int codigoProduto = Integer.parseInt(JOptionPane.showInputDialog(messageMostrarProdutos2));
+                int quantidadeAdicionada = Integer.parseInt(JOptionPane.showInputDialog("Digite a quantidade que deseja adicionar:"));
+
+                produtos.get(codigoProduto).estoque += quantidadeAdicionada;
+                JOptionPane.showMessageDialog(null, "Estoque atualizado");
+                break;
               default:
                 break;
             }
@@ -159,9 +173,8 @@ public class Principal {
                 int quantidadeComprada = Integer
                     .parseInt(JOptionPane.showInputDialog("Digite a quantidade que deseja comprar:", "1"));
                 if (produtoSelecionado.estoque >= quantidadeComprada && quantidadeComprada > 0) {
-                  produtoSelecionado.estoque -= quantidadeComprada;
-                  Venda vendaCliente = new Venda(clienteSelecionado, vendedorSelecionado, produtoSelecionado,
-                      quantidadeComprada);
+                  produtoSelecionado.estoque -= quantidadeComprada; //RETIRA A QUANTIDADE DO ESTOQUE
+                  Venda vendaCliente = new Venda(clienteSelecionado, vendedorSelecionado, produtoSelecionado,quantidadeComprada);
                   vendasConcluidas.add(vendaCliente);
                   vendasDiarias.add(vendaCliente);
                 } else {
@@ -172,8 +185,7 @@ public class Principal {
                   }
                 }
                 Object[] options = { "Sim", "Finalizar a compra" };
-                resposta = JOptionPane.showOptionDialog(null, "Deseja continuar comprando?", "Aviso",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+                resposta = JOptionPane.showOptionDialog(null, "Deseja continuar comprando?", "Aviso",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
               } while (resposta == 0);
               String messageFinalizarVenda = "";
               if (!vendasConcluidas.isEmpty()) {
@@ -191,10 +203,21 @@ public class Principal {
                   }
                 }
                 messageFinalizarVenda += "\n\nVALOR TOTAL:   R$" + valorTotalCompra;
+                messageFinalizarVenda += "\n\nFinalizar compra?";
               } else {
                 messageFinalizarVenda = "NENHUMA COMPRA FOI REALIZADA";
               }
-              JOptionPane.showMessageDialog(null, messageFinalizarVenda);
+
+              int respostaFinalizarCompra = JOptionPane.showConfirmDialog(null, messageFinalizarVenda,"Finalizar Venda", JOptionPane.YES_NO_OPTION);
+              if (respostaFinalizarCompra == 1) {
+                for (Map.Entry<Integer, ArrayList<Venda>> venda : vendas.entrySet()) {
+                  for (Venda vendaEfetuada : venda.getValue()) {
+                    vendaEfetuada.produto.estoque += vendaEfetuada.quantidadeComprada;
+                    vendasDiarias.remove(vendasDiarias.size() - 1);
+                    //TODO PENSAR EM UMA FORMA DE CANCELAR A COMPRA
+                  }
+                }
+              }
             } else {
               JOptionPane.showMessageDialog(null, "Nenhum cliente ou vendedor cadastrado");
             }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Venda {
+  static int codigo = 0;
   Clientes cliente = null;
   Vendedores vendedor = null;
   Produtos produto = null;
@@ -13,6 +14,7 @@ public class Venda {
   Double comissaoVenda = 0.;
 
   public Venda(Clientes cliente, Vendedores vendedor, Produtos produto, int quantidadeComprada) {
+    codigo += 1;
     this.cliente = cliente;
     this.vendedor = vendedor;
     this.produto = produto;

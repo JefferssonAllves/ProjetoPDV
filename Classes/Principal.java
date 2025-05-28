@@ -153,9 +153,10 @@ public class Principal {
                 break;
               case 4: // SWITCH CASE DA ABA PRODUTOS - CASE 4 - Aba referente a remoção de produtos
                 // Mostra todos os produtos e recebe o codigo do produto que sera removido
-                int codigoRemoveProduto = Integer.parseInt(Produto.mostrar(produtos) + "\n\nDigite o codigo do produto que deseja remover:");
+                int codigoRemoveProduto = Integer.parseInt(JOptionPane.showInputDialog(Produto.mostrar(produtos) + "\n\nDigite o codigo do produto que deseja remover:"));
                 produtos.remove(codigoRemoveProduto); // Remove o produto selecionado da lista de produtos
                 JOptionPane.showMessageDialog(null, "Produto removido com sucesso");
+                break;
               default:
                 break;
             }

@@ -27,8 +27,7 @@ public class Pessoa {
     for (Map.Entry<Integer, Pessoa> pessoa : cadastrados.entrySet()) { // Percorre o HashMap dos objetos cadastrados - // 'objetos'
       // String formatada para mostrar o codigo e o nome dos objetos
       // cliente.getKey() -> retorna a chave do HashMap(codigo do cliente)
-      // cliente.getValue() -> retorna o objeto 'cliente ou vendedor', nesse caso mostrará o nome
-      // por causa do metodo 'toString()'
+      // cliente.getValue() -> retorna o objeto 'cliente ou vendedor', nesse caso mostrará o nome por causa do metodo 'toString()'
       message += "   " + pessoa.getKey() + "    -    " + pessoa.getValue() + "\n"; // Cria uma String formada para mostrar os objetos cadastrados
     }
     return message; // Retorna a mensagem completa com todos os objetos

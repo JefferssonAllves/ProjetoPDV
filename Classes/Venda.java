@@ -5,15 +5,15 @@ import java.time.format.DateTimeFormatter;
 
 public class Venda {
   static int codigo = 0;
-  Clientes cliente = null;
-  Vendedores vendedor = null;
-  Produtos produto = null;
+  Cliente cliente = null;
+  Vendedor vendedor = null;
+  Produto produto = null;
   int quantidadeComprada = 0;
   Double totalVenda = 0.;
   String dataHora = "";
   Double comissaoVenda = 0.;
 
-  public Venda(Clientes cliente, Vendedores vendedor, Produtos produto, int quantidadeComprada) {
+  public Venda(Cliente cliente, Vendedor vendedor, Produto produto, int quantidadeComprada) {
     codigo += 1;
     this.cliente = cliente;
     this.vendedor = vendedor;

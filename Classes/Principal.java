@@ -236,8 +236,7 @@ public class Principal {
               }
 
               // Mostra a string formatada da compra realizada pelo cliente, e exibe a opção de finalizar a venda
-              int respostaFinalizarCompra = JOptionPane.showConfirmDialog(null, messageFinalizarVenda,
-                  "Finalizar Venda", JOptionPane.YES_NO_OPTION);
+              int respostaFinalizarCompra = JOptionPane.showConfirmDialog(null, messageFinalizarVenda,"Finalizar Venda", JOptionPane.YES_NO_OPTION);
               if (respostaFinalizarCompra == 1) { // Verifica se a resposta do cliente foi igual a 'Não'. Se caso isso ocorra, o programa deverá cancelar a venda
                 for (Map.Entry<Integer, ArrayList<Venda>> venda : carrinhoCompras.entrySet()) { // Percorre o HashMap do carrinho de compras do cliente
                   for (Venda vendaEfetuada : venda.getValue()) { // Percorre apenas os objetos do tipo 'venda' do carrinho de compras do cliente, para acessar os produtos que ele comprou

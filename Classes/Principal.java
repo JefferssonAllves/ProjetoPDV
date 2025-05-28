@@ -57,8 +57,7 @@ public class Principal {
                 try {
                   String messageRemoverCliente = Pessoa.mostrar(clientes); //Mostrar clientes
                   // Remove o cliente cadastrado com base no codigo dele
-                  clientes.remove(Integer.parseInt(JOptionPane
-                      .showInputDialog(messageRemoverCliente + "\n\nDigite o codigo do cliente que deseja remover:")));
+                  clientes.remove(Integer.parseInt(JOptionPane.showInputDialog(messageRemoverCliente + "\n\nDigite o codigo do cliente que deseja remover:")));
                   JOptionPane.showMessageDialog(null, "Cliente removido com sucesso");
                 } catch (NullPointerException npe) {
                   JOptionPane.showMessageDialog(null, "Nenhum cliente cadastrado");
@@ -98,8 +97,7 @@ public class Principal {
                 try {
                   String messageRemoverVendedor = Pessoa.mostrar(vendedores); // Mostra os vendedores cadastrados
                   // Remove o vendedor cadastrado com base no codigo dele
-                  vendedores.remove(Integer.parseInt(JOptionPane
-                      .showInputDialog(messageRemoverVendedor + "\n\nDigite o codigo do cliente que deseja remover:")));
+                  vendedores.remove(Integer.parseInt(JOptionPane.showInputDialog(messageRemoverVendedor + "\n\nDigite o codigo do cliente que deseja remover:")));
                   JOptionPane.showMessageDialog(null, "Vendedor removido com sucesso");
                 } catch (NullPointerException npe) {
                   JOptionPane.showMessageDialog(null, "Nenhum vendedor cadastrado");
@@ -130,8 +128,7 @@ public class Principal {
                   JOptionPane.showMessageDialog(null, "Valor inválido");
                   break;
                 }
-                int quantidadeEstoque = Integer
-                    .parseInt(JOptionPane.showInputDialog("Digite a quantidade desse produto:")); // Recebe a quantidade em estoque do produto
+                int quantidadeEstoque = Integer.parseInt(JOptionPane.showInputDialog("Digite a quantidade desse produto:")); // Recebe a quantidade em estoque do produto
                 if (quantidadeEstoque < 0) { // Faz uma vlidação da quantidade do produto
                   JOptionPane.showMessageDialog(null, "Quantidade inválida");
                   break;
@@ -146,20 +143,17 @@ public class Principal {
                 break;
               case 3: // SWITCH CASE DA ABA PRODUTOS - CASE 3 - Aba referente ao aumento na quantidade de produtos
                 // Mostra todos os produtos e recebe o codigo do produto que sera adicionada a quantidade de estoque
-                int codigoProduto = Integer.parseInt(
-                    JOptionPane.showInputDialog(Produto.mostrar(produtos) + "\n\nDigite o codigo do produto:"));
+                int codigoProduto = Integer.parseInt(JOptionPane.showInputDialog(Produto.mostrar(produtos) + "\n\nDigite o codigo do produto:"));
 
                 // Recebe a quantidade que sera adicionada ao produto
-                int quantidadeAdicionada = Integer
-                    .parseInt(JOptionPane.showInputDialog("Digite a quantidade que deseja adicionar:"));
+                int quantidadeAdicionada = Integer.parseInt(JOptionPane.showInputDialog("Digite a quantidade que deseja adicionar:"));
 
                 produtos.get(codigoProduto).estoque += quantidadeAdicionada; // Adiciona a quantidade ao atributo 'estoque' do produto
                 JOptionPane.showMessageDialog(null, "Estoque atualizado");
                 break;
               case 4: // SWITCH CASE DA ABA PRODUTOS - CASE 4 - Aba referente a remoção de produtos
                 // Mostra todos os produtos e recebe o codigo do produto que sera removido
-                int codigoRemoveProduto = Integer
-                    .parseInt(Produto.mostrar(produtos) + "\n\nDigite o codigo do produto que deseja remover:");
+                int codigoRemoveProduto = Integer.parseInt(Produto.mostrar(produtos) + "\n\nDigite o codigo do produto que deseja remover:");
                 produtos.remove(codigoRemoveProduto); // Remove o produto selecionado da lista de produtos
                 JOptionPane.showMessageDialog(null, "Produto removido com sucesso");
               default:
@@ -181,34 +175,29 @@ public class Principal {
 
             if (!clientesArray.isEmpty() && !vendedoresArray.isEmpty()) { // Testa para saber se existe algum cliente e vendedor cadastrado
               // Recebe o cliente selecionado na hora da compra
-              clienteSelecionado = (Cliente) JOptionPane.showInputDialog(null, "Selecione o cliente", "Opção",
-                  JOptionPane.INFORMATION_MESSAGE, null, clientesArray.toArray(), clientesArray.get(0));
+              clienteSelecionado = (Cliente) JOptionPane.showInputDialog(null, "Selecione o cliente", "Opção",JOptionPane.INFORMATION_MESSAGE, null, clientesArray.toArray(), clientesArray.get(0));
 
               // Recebe o vendedor selecionado na hora da compra
-              vendedorSelecionado = (Vendedor) JOptionPane.showInputDialog(null, "Selecione o vendedor", "Opção",
-                  JOptionPane.INFORMATION_MESSAGE, null, vendedoresArray.toArray(), vendedoresArray.get(0));
+              vendedorSelecionado = (Vendedor) JOptionPane.showInputDialog(null, "Selecione o vendedor", "Opção",JOptionPane.INFORMATION_MESSAGE, null, vendedoresArray.toArray(), vendedoresArray.get(0));
 
               String[] options = { "Sim", "Finalizar a compra" }; // Opções para finalizar a compra - Serão mostradas no JOptionPane do While
               ArrayList<Venda> produtosComprados = new ArrayList<>(); // Carrinho de compras do cliente selecionado
               do {
                 if (!produtos.isEmpty()) { // Verifica se existe produtos cadastrados
-                  produtoSelecionado = (Produto) JOptionPane.showInputDialog(null, "Selecione o produto", "Opção",
-                      JOptionPane.INFORMATION_MESSAGE, null, produtosArray.toArray(), produtosArray.get(0));
+                  produtoSelecionado = (Produto) JOptionPane.showInputDialog(null, "Selecione o produto", "Opção",JOptionPane.INFORMATION_MESSAGE, null, produtosArray.toArray(), produtosArray.get(0));
                 } else {
                   JOptionPane.showMessageDialog(null, "Nenhum produto cadastrado");
                 }
 
                 //Recebe a quantidade do produto selecionado que sera comprada
-                int quantidadeComprada = Integer
-                    .parseInt(JOptionPane.showInputDialog("Digite a quantidade que deseja comprar:", "1"));
+                int quantidadeComprada = Integer.parseInt(JOptionPane.showInputDialog("Digite a quantidade que deseja comprar:", "1"));
 
                 // Verifica se a quantidade comprada é menor que a do estoque, e verifica se a quantidade comprada é maior que 0
                 if (produtoSelecionado.estoque >= quantidadeComprada && quantidadeComprada > 0) {
                   produtoSelecionado.estoque -= quantidadeComprada; // Retira a quantidade comprada do estoque do produto
 
                   // Cria um objeto do tipo venda, onde será armazedas as informações da venda realizada
-                  Venda vendaCliente = new Venda(clienteSelecionado, vendedorSelecionado, produtoSelecionado,
-                      quantidadeComprada);
+                  Venda vendaCliente = new Venda(clienteSelecionado, vendedorSelecionado, produtoSelecionado,quantidadeComprada);
 
                   produtosComprados.add(vendaCliente); // Adiciona a venda efetuada ao carrinho de compras do cliente
                   vendasDiarias.add(vendaCliente); // Adiciona a venda efetuada as vendas realizadas no dia
@@ -217,8 +206,7 @@ public class Principal {
                 }
 
                 // While para manter o cliente no menu de compras
-              } while (JOptionPane.showOptionDialog(null, "Deseja continuar comprando?", "Aviso",
-                  JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]) == 0);
+              } while (JOptionPane.showOptionDialog(null, "Deseja continuar comprando?", "Aviso",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]) == 0);
 
               String messageFinalizarVenda = "";
               if (!produtosComprados.isEmpty()) { // Verifica se o carrinho de compras do cliente esta vazio

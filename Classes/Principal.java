@@ -13,7 +13,9 @@ public class Principal {
     Map<Integer, Pessoa> clientes = new HashMap<>(); // HasMap para todos os clientes registrados
     Map<Integer, Pessoa> vendedores = new HashMap<>(); // HasMap para todos os vendedores registrados
 
-    ArrayList<Venda> vendasDiarias = new ArrayList<>(); // ArrayList para armazenar todas as vendas efetuadas no dia
+    HashMap<String, ArrayList<Venda>> vendasTotais = new HashMap<>(); // ArrayList para armazenar todas as venda efetuadas no dia
+    ArrayList<Venda> vendasDiarias = new ArrayList<>();
+    int atualizarVendasTotais = 1;
 
     // Loop para adicionar produtos pré registrados ao programa principal
     for (Produto produto : gerarProdutos()) {
@@ -181,28 +183,24 @@ public class Principal {
             break;
           case 4: // SWITCH CASE PRINCIPAL - CASE 4 - Aba referente a efetuar uma venda
 
-            // Transforma todos os HashMaps de objetos criados em ArrayLists para serem usados no Input listado do JOptionPane
-            ArrayList<Pessoa> clientesArray = new ArrayList<>(clientes.values());
-            ArrayList<Pessoa> vendedoresArray = new ArrayList<>(vendedores.values());
-            ArrayList<Produto> produtosArray = new ArrayList<>(produtos.values());
-
-            // Cria objetos para serem usados no restante do codigo
+            // Cria objetos para serem usados no restante da venda
             Cliente clienteSelecionado = null;
             Vendedor vendedorSelecionado = null;
             Produto produtoSelecionado = null;
             String dataHora = null;
-            if (!clientesArray.isEmpty() && !vendedoresArray.isEmpty()) { // Testa para saber se existe algum cliente e vendedor cadastrado
+
+            if (!clientes.values().isEmpty() && !vendedores.values().isEmpty()) { // Testa para saber se existe algum cliente e vendedor cadastrado
               // Recebe o cliente selecionado na hora da compra
-              clienteSelecionado = (Cliente) JOptionPane.showInputDialog(null, "Selecione o cliente", "Opção",JOptionPane.INFORMATION_MESSAGE, null, clientesArray.toArray(), clientesArray.get(0));
+              clienteSelecionado = (Cliente) JOptionPane.showInputDialog(null, "Selecione o cliente", "Opção",JOptionPane.INFORMATION_MESSAGE, null, clientes.values().toArray(), clientes.get(1));
 
               // Recebe o vendedor selecionado na hora da compra
-              vendedorSelecionado = (Vendedor) JOptionPane.showInputDialog(null, "Selecione o vendedor", "Opção",JOptionPane.INFORMATION_MESSAGE, null, vendedoresArray.toArray(), vendedoresArray.get(0));
+              vendedorSelecionado = (Vendedor) JOptionPane.showInputDialog(null, "Selecione o vendedor", "Opção",JOptionPane.INFORMATION_MESSAGE, null, vendedores.values().toArray(), vendedores.get(1));
 
               String[] options = { "Sim", "Finalizar a compra" }; // Opções para finalizar a compra - Serão mostradas no JOptionPane do While
               ArrayList<Venda> carrinhoCompras = new ArrayList<>(); // Carrinho de compras do cliente selecionado
               do {
                 if (!produtos.isEmpty()) { // Verifica se existe produtos cadastrados
-                  produtoSelecionado = (Produto) JOptionPane.showInputDialog(null, "Selecione o produto", "Opção",JOptionPane.INFORMATION_MESSAGE, null, produtosArray.toArray(), produtosArray.get(0));
+                  produtoSelecionado = (Produto) JOptionPane.showInputDialog(null, "Selecione o produto", "Opção",JOptionPane.INFORMATION_MESSAGE, null, produtos.values().toArray(), produtos.get(1));
                 } else {
                   JOptionPane.showMessageDialog(null, "Nenhum produto cadastrado");
                 }
@@ -213,14 +211,15 @@ public class Principal {
                 // Verifica se a quantidade comprada é menor que a do estoque, e verifica se a quantidade comprada é maior que 0
                 if (produtoSelecionado.estoque >= quantidadeComprada && quantidadeComprada > 0) {
                   produtoSelecionado.estoque -= quantidadeComprada; // Retira a quantidade comprada do estoque do produto
-                  LocalDateTime now = LocalDateTime.now();
-                  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-                  dataHora = now.format(formatter);
+                  LocalDateTime now = LocalDateTime.now(); // Recebe a data e hora atual do computador
+                  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"); // Cria um formatador para datas
+
+                  dataHora = now.format(formatter); // Formata a data com o formatador criado
                   // Cria um objeto do tipo venda, onde será armazedas as informações da venda realizada
-                  Venda vendaCliente = new Venda(clienteSelecionado, vendedorSelecionado, produtoSelecionado,quantidadeComprada, dataHora); // TODO
+                  Venda vendaCliente = new Venda(clienteSelecionado, vendedorSelecionado, produtoSelecionado, quantidadeComprada, dataHora);
 
                   carrinhoCompras.add(vendaCliente); // Adiciona a venda efetuada ao carrinho de compras do cliente
-                  vendasDiarias.add(vendaCliente); // Adiciona a venda efetuada as vendas realizadas no dia
+
                 } else {
                   JOptionPane.showMessageDialog(null, "Quantidade Invalida");
                 }
@@ -228,11 +227,10 @@ public class Principal {
                 // While para manter o cliente no menu de compras
               } while (JOptionPane.showOptionDialog(null, "Deseja continuar comprando?", "Aviso",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]) == 0);
 
+
               String messageFinalizarVenda = "";
               if (!carrinhoCompras.isEmpty()) { // Verifica se o carrinho de compras do cliente esta vazio
                 Double valorTotalCompra = 0.; // Valor total das compras realizadas pelo cliente
-
-                //Como obrigatoriamente todos os valores de cliente, vendedor, data e hora serão iguais, pode-se usar o valor do primeiro elemento do ArrayList - get(0)
 
                 messageFinalizarVenda += "Cliente: " + clienteSelecionado; // Recupera o nome do cliente que efetuou a compra
                 messageFinalizarVenda += "\nVendedor: " + vendedorSelecionado; // Recupera o nome do vendedor que efetuou a venda
@@ -241,11 +239,9 @@ public class Principal {
                   valorTotalCompra += produtosCarrinho.totalVenda; // Adiciona o valor do produto multiplicado pela quantidade comprada ao valor total da compra
 
                   //Formata a string dos produtos comprados pelo cliente
-                  messageFinalizarVenda += produtosCarrinho.produto.nome + "  -  "
-                      + produtosCarrinho.quantidadeComprada
+                  messageFinalizarVenda += produtosCarrinho.produto.nome + "  -  " + produtosCarrinho.quantidadeComprada
                       + "  X  R$" + produtosCarrinho.produto.valor + "   -    R$"
-                      + Math.round(produtosCarrinho.totalVenda)
-                      + "\n";
+                      + Math.round(produtosCarrinho.totalVenda) + "\n";
                 }
 
                 messageFinalizarVenda += "\n\nVALOR TOTAL:   R$" + valorTotalCompra; // Mostra o valor final da compra
@@ -260,39 +256,66 @@ public class Principal {
                // Percorre o HashMap do carrinho de compras do cliente
                 for (Venda vendaEfetuada : carrinhoCompras) { // Percorre apenas os objetos do tipo 'venda' do carrinho de compras do cliente, para acessar os produtos que ele comprou
                   vendaEfetuada.produto.estoque += vendaEfetuada.quantidadeComprada; // Coloca a quantidade que foi comprada de volta ao estoque do produto
-                  // Serve para remover a ultimo objeto do tipo 'venda' adicionado a 'vendasDiarias'.
-                  vendasDiarias.remove(vendasDiarias.size() - 1); // Como esta dentro do 'for', removera todos os objetos do tipo 'venda' que foram criadas pelo cliente que cancelou a compra
                 }
+              } else {
+                LocalDateTime now = LocalDateTime.now(); // Recebe a data e hora atual do computador
+                DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Cria um formatador para datas
+
+                if (vendasTotais.size() > atualizarVendasTotais) {
+                  atualizarVendasTotais = vendasTotais.size();
+                  vendasDiarias.clear();
+                }
+                vendasDiarias.addAll(carrinhoCompras);
+                vendasTotais.put(now.format(formatterDate), new ArrayList<>(vendasDiarias)); // Adiciona a venda efetuada a todas as vendas
               }
             } else {
               JOptionPane.showMessageDialog(null, "Nenhum cliente ou vendedor cadastrado");
             }
             break;
+
           case 5: // SWITCH CASE PRINCIPAL - CASE 5 - Aba referente a geração de relatorio
-            Double valorBruto = 0.; // Valor total de todas as vendas realizadas no dia
-            for (Venda venda : vendasDiarias) {
-              valorBruto += venda.totalVenda; // Soma o valor de todas as vendas individualmente para formar o valor final
-            }
-            Double impostoDiario = valorBruto * 0.25; // Aplica um imposto de 25% as vendas realizadas no dia
-            String relatorioDiario = "RELATORIO\n\n"; // Cria uma String para mostrar o relatorio final
+            if (!vendasTotais.isEmpty()) { // Teste para saber se houve alguma venda realizada1
+              ArrayList<String> datas = new ArrayList<>(vendasTotais.keySet());
+              String dataSelecionada = (String) JOptionPane.showInputDialog(null,
+                  "Selecione a data para gerar o relatório", "Opção", JOptionPane.INFORMATION_MESSAGE, null,
+                  datas.toArray(), datas.get(0));
 
-            //Mostra as informações principais de todas as vendas realizadas no dia
-            for (Venda venda : vendasDiarias) {
-              relatorioDiario += venda.produto.nome + "  -  " + venda.quantidadeComprada
-                  + "  X  R$" + venda.produto.valor + "   -    R$" + Math.round(venda.totalVenda)
-                  + "\nVendedor:  " + venda.vendedor.nome + "  -  Comissão:   R$" + venda.comissaoVenda + "\n\n";
-            }
-            relatorioDiario += "RELATORIO DE COMISSÕES\n";
-            for (Map.Entry<Integer, Pessoa> pessoa : vendedores.entrySet()) { // Mostra o valor total que cada vendedor recebeu de comissão durante o dia
-              Vendedor vendedor = (Vendedor) pessoa.getValue();
-              relatorioDiario += vendedor + ":     R$" + vendedor.comissao + "\n";
-            }
+              Double valorBruto = 0.; // Valor total de todas as vendas realizadas no dia
+              for (Venda venda : vendasTotais.get(dataSelecionada)) {
+                valorBruto += venda.totalVenda; // Soma o valor de todas as vendas individualmente para formar o valor
+                                                // final
+              }
+              Double impostoDiario = valorBruto * 0.25; // Aplica um imposto de 25% as vendas realizadas no dia
+              String relatorioDiario = "RELATORIO:  " + dataSelecionada + "\n\n"; // Cria uma String para mostrar o
+                                                                                  // relatorio final
 
-            relatorioDiario += "\n\nNúmero de vendas:   " + vendasDiarias.size(); // Mostra o total de vendas realizadas no dia
-            relatorioDiario += "\nValor bruto:   R$" + valorBruto; // Mostra o valor bruto adquirido no dia
-            relatorioDiario += "\nImposto aplicado:   R$" + impostoDiario; // Mostra o valor com o imposto aplicado
-            relatorioDiario += "\nValor final:   R$" + (valorBruto - impostoDiario); // Mostra o valor real ganho no dia
-            JOptionPane.showMessageDialog(null, relatorioDiario);
+              // Mostra as informações principais de todas as vendas realizadas no dia
+              for (Venda venda : vendasTotais.get(dataSelecionada)) {
+                relatorioDiario += venda.dataHora + ":   " + venda.produto.nome + "  -  " + venda.quantidadeComprada
+                    + "  X  R$" + venda.produto.valor + "   -    R$" + Math.round(venda.totalVenda)
+                    + "\nVendedor:  " + venda.vendedor.nome + "  -  Comissão:   R$" + venda.comissaoVenda + "\n\n";
+              }
+              relatorioDiario += "RELATORIO DE COMISSÕES\n";
+              for (Map.Entry<Integer, Pessoa> pessoa : vendedores.entrySet()) { // Mostra o valor total que cada
+                                                                                // vendedor recebeu de comissão durante
+                                                                                // o dia
+                Vendedor vendedor = (Vendedor) pessoa.getValue();
+                relatorioDiario += vendedor + ":     R$" + vendedor.comissao + "\n";
+              }
+
+              relatorioDiario += "\n\nNúmero de vendas:   " + vendasTotais.get(dataSelecionada).size(); // Mostra o
+                                                                                                        // total de
+                                                                                                        // vendas
+                                                                                                        // realizadas no
+                                                                                                        // dia
+              relatorioDiario += "\nValor bruto:   R$" + valorBruto; // Mostra o valor bruto adquirido no dia
+              relatorioDiario += "\nImposto aplicado:   R$" + impostoDiario; // Mostra o valor com o imposto aplicado
+              relatorioDiario += "\nValor final:   R$" + (valorBruto - impostoDiario); // Mostra o valor real ganho no
+                                                                                       // dia
+              JOptionPane.showMessageDialog(null, relatorioDiario);
+            } else {
+              JOptionPane.showMessageDialog(null, "Nenhuma venda foi realizada");
+            }
             break;
           case 6: // SWITCH CASE PRINCIPAL - CASE 6 - Finaliza o programa
             exec = false; // Encerra a execução do programa principal

@@ -1,0 +1,17 @@
+
+
+
+                                  TOPICOS
+
+Aprensentar o projeto em si ------------> Lucas
+Aprensentar o que foi usado para construir o projeto ------------> Isaque
+Conceito da Orientação a Objetos - Explicar a Herança entre Pessoa - Cliente e Vendedor ------------> Gabriel
+Apresentar classe Cliente e vendedor ------------> Miguel
+Apresentar classe Venda e Produto ------------> Joao Pedro
+Apresentar a aba clientes e vendedores no programa Principal ------------> Luiz
+Aprensentar a aba Produtos no programa Principal ------------> Kevin
+Apresentar o sistema de vendas ------------> Jeff
+Apresentar o sistema de gerar relatório ------------> Igor
+
+
+

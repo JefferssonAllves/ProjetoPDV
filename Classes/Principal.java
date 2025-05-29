@@ -1,5 +1,7 @@
 package Classes;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,8 +59,14 @@ public class Principal {
                 try {
                   String messageRemoverCliente = Pessoa.mostrar(clientes); //Mostrar clientes
                   // Remove o cliente cadastrado com base no codigo dele
-                  clientes.remove(Integer.parseInt(JOptionPane.showInputDialog(messageRemoverCliente + "\n\nDigite o codigo do cliente que deseja remover:")));
-                  JOptionPane.showMessageDialog(null, "Cliente removido com sucesso");
+                  int codigoCliente = Integer.parseInt(JOptionPane.showInputDialog(messageRemoverCliente + "\n\nDigite o codigo do cliente que deseja remover:"));
+
+                  if(clientes.containsKey(codigoCliente)){
+                    clientes.remove(codigoCliente);
+                    JOptionPane.showMessageDialog(null, "Cliente removido com sucesso");
+                  } else {
+                    JOptionPane.showMessageDialog(null, "Nenhum cliente com esse codigo");
+                  }
                 } catch (NullPointerException npe) {
                   JOptionPane.showMessageDialog(null, "Nenhum cliente cadastrado");
                 }
@@ -97,8 +105,13 @@ public class Principal {
                 try {
                   String messageRemoverVendedor = Pessoa.mostrar(vendedores); // Mostra os vendedores cadastrados
                   // Remove o vendedor cadastrado com base no codigo dele
-                  vendedores.remove(Integer.parseInt(JOptionPane.showInputDialog(messageRemoverVendedor + "\n\nDigite o codigo do cliente que deseja remover:")));
-                  JOptionPane.showMessageDialog(null, "Vendedor removido com sucesso");
+                  int codigoVendedor = Integer.parseInt(JOptionPane.showInputDialog(messageRemoverVendedor + "\n\nDigite o codigo do cliente que deseja remover:"));
+                  if(vendedores.containsKey(codigoVendedor)){
+                    vendedores.remove(codigoVendedor);
+                    JOptionPane.showMessageDialog(null, "Vendedor removido com sucesso");
+                  } else {
+                    JOptionPane.showMessageDialog(null, "Nenhum vendedor com esse codigo");
+                  }
                 } catch (NullPointerException npe) {
                   JOptionPane.showMessageDialog(null, "Nenhum vendedor cadastrado");
                 }
@@ -153,16 +166,20 @@ public class Principal {
                 break;
               case 4: // SWITCH CASE DA ABA PRODUTOS - CASE 4 - Aba referente a remoção de produtos
                 // Mostra todos os produtos e recebe o codigo do produto que sera removido
-                int codigoRemoveProduto = Integer.parseInt(JOptionPane.showInputDialog(Produto.mostrar(produtos) + "\n\nDigite o codigo do produto que deseja remover:"));
-                produtos.remove(codigoRemoveProduto); // Remove o produto selecionado da lista de produtos
-                JOptionPane.showMessageDialog(null, "Produto removido com sucesso");
+                int codigoRemoverProduto = Integer.parseInt(JOptionPane.showInputDialog(Produto.mostrar(produtos) + "\n\nDigite o codigo do produto que deseja remover:"));
+
+                if(produtos.containsKey(codigoRemoverProduto)){
+                  produtos.remove(codigoRemoverProduto); // Remove o produto selecionado da lista de produtos
+                  JOptionPane.showMessageDialog(null, "Produto removido com sucesso");
+                } else {
+                  JOptionPane.showMessageDialog(null, "Nenhum produto com esse codigo");
+                }
                 break;
               default:
                 break;
             }
             break;
           case 4: // SWITCH CASE PRINCIPAL - CASE 4 - Aba referente a efetuar uma venda
-            HashMap<Integer, ArrayList<Venda>> carrinhoCompras = new HashMap<>();
 
             // Transforma todos os HashMaps de objetos criados em ArrayLists para serem usados no Input listado do JOptionPane
             ArrayList<Pessoa> clientesArray = new ArrayList<>(clientes.values());
@@ -173,7 +190,7 @@ public class Principal {
             Cliente clienteSelecionado = null;
             Vendedor vendedorSelecionado = null;
             Produto produtoSelecionado = null;
-
+            String dataHora = null;
             if (!clientesArray.isEmpty() && !vendedoresArray.isEmpty()) { // Testa para saber se existe algum cliente e vendedor cadastrado
               // Recebe o cliente selecionado na hora da compra
               clienteSelecionado = (Cliente) JOptionPane.showInputDialog(null, "Selecione o cliente", "Opção",JOptionPane.INFORMATION_MESSAGE, null, clientesArray.toArray(), clientesArray.get(0));
@@ -182,7 +199,7 @@ public class Principal {
               vendedorSelecionado = (Vendedor) JOptionPane.showInputDialog(null, "Selecione o vendedor", "Opção",JOptionPane.INFORMATION_MESSAGE, null, vendedoresArray.toArray(), vendedoresArray.get(0));
 
               String[] options = { "Sim", "Finalizar a compra" }; // Opções para finalizar a compra - Serão mostradas no JOptionPane do While
-              ArrayList<Venda> produtosComprados = new ArrayList<>(); // Carrinho de compras do cliente selecionado
+              ArrayList<Venda> carrinhoCompras = new ArrayList<>(); // Carrinho de compras do cliente selecionado
               do {
                 if (!produtos.isEmpty()) { // Verifica se existe produtos cadastrados
                   produtoSelecionado = (Produto) JOptionPane.showInputDialog(null, "Selecione o produto", "Opção",JOptionPane.INFORMATION_MESSAGE, null, produtosArray.toArray(), produtosArray.get(0));
@@ -196,11 +213,13 @@ public class Principal {
                 // Verifica se a quantidade comprada é menor que a do estoque, e verifica se a quantidade comprada é maior que 0
                 if (produtoSelecionado.estoque >= quantidadeComprada && quantidadeComprada > 0) {
                   produtoSelecionado.estoque -= quantidadeComprada; // Retira a quantidade comprada do estoque do produto
-
+                  LocalDateTime now = LocalDateTime.now();
+                  DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                  dataHora = now.format(formatter);
                   // Cria um objeto do tipo venda, onde será armazedas as informações da venda realizada
-                  Venda vendaCliente = new Venda(clienteSelecionado, vendedorSelecionado, produtoSelecionado,quantidadeComprada);
+                  Venda vendaCliente = new Venda(clienteSelecionado, vendedorSelecionado, produtoSelecionado,quantidadeComprada, dataHora); // TODO
 
-                  produtosComprados.add(vendaCliente); // Adiciona a venda efetuada ao carrinho de compras do cliente
+                  carrinhoCompras.add(vendaCliente); // Adiciona a venda efetuada ao carrinho de compras do cliente
                   vendasDiarias.add(vendaCliente); // Adiciona a venda efetuada as vendas realizadas no dia
                 } else {
                   JOptionPane.showMessageDialog(null, "Quantidade Invalida");
@@ -210,26 +229,25 @@ public class Principal {
               } while (JOptionPane.showOptionDialog(null, "Deseja continuar comprando?", "Aviso",JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]) == 0);
 
               String messageFinalizarVenda = "";
-              if (!produtosComprados.isEmpty()) { // Verifica se o carrinho de compras do cliente esta vazio
+              if (!carrinhoCompras.isEmpty()) { // Verifica se o carrinho de compras do cliente esta vazio
                 Double valorTotalCompra = 0.; // Valor total das compras realizadas pelo cliente
-                carrinhoCompras.put(clienteSelecionado.codigo, produtosComprados); // Relaciona os produtos comprados com o cliente selecionado
 
                 //Como obrigatoriamente todos os valores de cliente, vendedor, data e hora serão iguais, pode-se usar o valor do primeiro elemento do ArrayList - get(0)
-                for (Map.Entry<Integer, ArrayList<Venda>> venda : carrinhoCompras.entrySet()) {
-                  messageFinalizarVenda += "Cliente: " + venda.getValue().get(0).cliente; // Recupera o nome do cliente que efetuou a compra
-                  messageFinalizarVenda += "\nVendedor: " + venda.getValue().get(0).vendedor; // Recupera o nome do vendedor que efetuou a venda
-                  messageFinalizarVenda += "\nData e Hora: " + venda.getValue().get(0).dataHora + "\n\n"; // Recupera a data e hora da compra
-                  for (Venda produtosCarrinho : venda.getValue()) { // Recupera todos os produtos comprados pelo cliente
-                    valorTotalCompra += produtosCarrinho.totalVenda; // Adiciona o valor do produto multiplicado pela quantidade comprada ao valor total da compra
 
-                    //Formata a string dos produtos comprados pelo cliente
-                    messageFinalizarVenda += produtosCarrinho.produto.nome + "  -  "
-                        + produtosCarrinho.quantidadeComprada
-                        + "  X  R$" + produtosCarrinho.produto.valor + "   -    R$"
-                        + Math.round(produtosCarrinho.totalVenda)
-                        + "\n";
-                  }
+                messageFinalizarVenda += "Cliente: " + clienteSelecionado; // Recupera o nome do cliente que efetuou a compra
+                messageFinalizarVenda += "\nVendedor: " + vendedorSelecionado; // Recupera o nome do vendedor que efetuou a venda
+                messageFinalizarVenda += "\nData e Hora: " + dataHora + "\n\n"; // Recupera a data e hora da compra
+                for (Venda produtosCarrinho : carrinhoCompras) { // Recupera todos os produtos comprados pelo cliente
+                  valorTotalCompra += produtosCarrinho.totalVenda; // Adiciona o valor do produto multiplicado pela quantidade comprada ao valor total da compra
+
+                  //Formata a string dos produtos comprados pelo cliente
+                  messageFinalizarVenda += produtosCarrinho.produto.nome + "  -  "
+                      + produtosCarrinho.quantidadeComprada
+                      + "  X  R$" + produtosCarrinho.produto.valor + "   -    R$"
+                      + Math.round(produtosCarrinho.totalVenda)
+                      + "\n";
                 }
+
                 messageFinalizarVenda += "\n\nVALOR TOTAL:   R$" + valorTotalCompra; // Mostra o valor final da compra
                 messageFinalizarVenda += "\n\nFinalizar compra?";
               } else {
@@ -239,12 +257,11 @@ public class Principal {
               // Mostra a string formatada da compra realizada pelo cliente, e exibe a opção de finalizar a venda
               int respostaFinalizarCompra = JOptionPane.showConfirmDialog(null, messageFinalizarVenda,"Finalizar Venda", JOptionPane.YES_NO_OPTION);
               if (respostaFinalizarCompra == 1) { // Verifica se a resposta do cliente foi igual a 'Não'. Se caso isso ocorra, o programa deverá cancelar a venda
-                for (Map.Entry<Integer, ArrayList<Venda>> venda : carrinhoCompras.entrySet()) { // Percorre o HashMap do carrinho de compras do cliente
-                  for (Venda vendaEfetuada : venda.getValue()) { // Percorre apenas os objetos do tipo 'venda' do carrinho de compras do cliente, para acessar os produtos que ele comprou
-                    vendaEfetuada.produto.estoque += vendaEfetuada.quantidadeComprada; // Coloca a quantidade que foi comprada de volta ao estoque do produto
-                    // Serve para remover a ultimo objeto do tipo 'venda' adicionado a 'vendasDiarias'.
-                    vendasDiarias.remove(vendasDiarias.size() - 1); // Como esta dentro do 'for', removera todos os objetos do tipo 'venda' que foram criadas pelo cliente que cancelou a compra
-                  }
+               // Percorre o HashMap do carrinho de compras do cliente
+                for (Venda vendaEfetuada : carrinhoCompras) { // Percorre apenas os objetos do tipo 'venda' do carrinho de compras do cliente, para acessar os produtos que ele comprou
+                  vendaEfetuada.produto.estoque += vendaEfetuada.quantidadeComprada; // Coloca a quantidade que foi comprada de volta ao estoque do produto
+                  // Serve para remover a ultimo objeto do tipo 'venda' adicionado a 'vendasDiarias'.
+                  vendasDiarias.remove(vendasDiarias.size() - 1); // Como esta dentro do 'for', removera todos os objetos do tipo 'venda' que foram criadas pelo cliente que cancelou a compra
                 }
               }
             } else {
@@ -263,12 +280,12 @@ public class Principal {
             for (Venda venda : vendasDiarias) {
               relatorioDiario += venda.produto.nome + "  -  " + venda.quantidadeComprada
                   + "  X  R$" + venda.produto.valor + "   -    R$" + Math.round(venda.totalVenda)
-                  + "\nVendedor:  " + venda.vendedor.nome + "  -  Comissão: R$" + venda.comissaoVenda + "\n\n";
+                  + "\nVendedor:  " + venda.vendedor.nome + "  -  Comissão:   R$" + venda.comissaoVenda + "\n\n";
             }
             relatorioDiario += "RELATORIO DE COMISSÕES\n";
             for (Map.Entry<Integer, Pessoa> pessoa : vendedores.entrySet()) { // Mostra o valor total que cada vendedor recebeu de comissão durante o dia
-              Vendedor vendedor = (Vendedor) pessoa;
-              relatorioDiario += vendedor + ":     " + vendedor.comissao + "\n";
+              Vendedor vendedor = (Vendedor) pessoa.getValue();
+              relatorioDiario += vendedor + ":     R$" + vendedor.comissao + "\n";
             }
 
             relatorioDiario += "\n\nNúmero de vendas:   " + vendasDiarias.size(); // Mostra o total de vendas realizadas no dia

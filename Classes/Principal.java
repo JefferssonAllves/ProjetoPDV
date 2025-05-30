@@ -15,7 +15,8 @@ public class Principal {
 
     HashMap<String, ArrayList<Venda>> vendasTotais = new HashMap<>(); // ArrayList para armazenar todas as venda efetuadas no dia
     ArrayList<Venda> vendasDiarias = new ArrayList<>();
-    int atualizarVendasTotais = 1;
+
+    String dataAntiga = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
     // Loop para adicionar produtos pré registrados ao programa principal
     for (Produto produto : gerarProdutos()) {
@@ -260,13 +261,20 @@ public class Principal {
               } else {
                 LocalDateTime now = LocalDateTime.now(); // Recebe a data e hora atual do computador
                 DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Cria um formatador para datas
+                String dataAtual = now.format(formatterDate);
 
-                if (vendasTotais.size() > atualizarVendasTotais) {
-                  atualizarVendasTotais = vendasTotais.size();
+                if (!dataAntiga.equals(dataAtual)) {
+                  dataAntiga = dataAtual;
                   vendasDiarias.clear();
+                  for (Map.Entry<Integer, Pessoa> pessoa : vendedores.entrySet()) {
+                    if (pessoa instanceof Vendedor){
+                      Vendedor vendedor = (Vendedor) pessoa;
+                      vendedor.comissao = 0;
+                    }
+                  }
                 }
                 vendasDiarias.addAll(carrinhoCompras);
-                vendasTotais.put(now.format(formatterDate), new ArrayList<>(vendasDiarias)); // Adiciona a venda efetuada a todas as vendas
+                vendasTotais.put(dataAtual, new ArrayList<>(vendasDiarias)); // Adiciona a venda efetuada a todas as vendas
               }
             } else {
               JOptionPane.showMessageDialog(null, "Nenhum cliente ou vendedor cadastrado");
